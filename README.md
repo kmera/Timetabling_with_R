@@ -31,6 +31,8 @@ The libaries needed to run the code, using R version 4.* are:
 
 When a University wants to define the professors schedule, the coordination team usually use a spreadsheet, but they have a really hard time trying to do that using tools that aren't suitable for that kind of tasks, so in order to support them with a specific tool, a Web app (using shiny) was developed which includes some features requested by the coordination team.
 
+**NOTE**: the language for this app is Spanish.
+
 ## File Descriptions <a name="files"></a>
 
 The R file (app.R) includes the following:
