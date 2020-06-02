@@ -89,9 +89,7 @@ server <- function(input, output) {
     #return(this_table)
   #}
   
-  #this_table <- read.xlsx("data/new_programacion.xlsx")
-  #loadData()
-  
+
   credentials <- callModule(shinyauthr::login, "login", 
                             data = user_base,
                             user_col = user,
@@ -385,10 +383,6 @@ server <- function(input, output) {
     paste0("Asignatura: ", input$subject)
   })
   
-  # output$nrc_code <- renderText({
-  #   paste0("Código Asignatura: ", input$nrc_code)
-  # })
-  
   output$work_day <- renderText({
     paste0("Día de clase: ", input$wday)
   })
@@ -533,11 +527,8 @@ server <- function(input, output) {
   })
   
   output$credits_prof <- renderText({
-    #ifelse(teaching_cred()[, 2] >= 6 && teaching_cred()[, 2] <= 20,
            paste0("Total Créditos Docencia: ", 
                   as.character(teaching_cred()[(teaching_cred()$Nombre == input$prof_name), 2]))
-     #      paste0("Los creditos de docencia deben estar entre 6 y 20, usted ha asignado: ", 
-      #            as.character(teaching_cred()[(teaching_cred()$Nombre == input$prof_name), 2]), ". Por favor corregir"))
   })
   
   total_cred <- reactive({
@@ -548,11 +539,8 @@ server <- function(input, output) {
   })
   
   output$tot_creds <- renderText({
-    #if_else(total_cred()$Total[] <= 40,
            paste0("Total Horas Docente: ", 
                  as.character(total_cred()[(total_cred()$Nombre == input$prof_name), 2]))
-     #      paste0("No puede asignar a un profesor mas de 40 creditos, usted ha asignado: ", 
-      #            as.character(total_cred()[(total_cred()$Nombre == input$prof_name), 2]), ". Por favor corregir"))
   })
   
   total_activ <- reactive({
@@ -581,8 +569,6 @@ server <- function(input, output) {
     },
     content = function(file) {
       write.xlsx(this_table(), file, row.names = FALSE)
-      # write.xlsx(this_table(), file = "data/programacion.xlsx", 
-      #            row.names = FALSE)
     })
   
   # Delete row
@@ -616,95 +602,8 @@ server <- function(input, output) {
     saveData(this_table())
     removeModal()
     shinyjs::enable("save")
-    
-    # if(total_cred()[(total_cred()$Nombre == input$prof_name), 2] <= 40 | 
-    #    teaching_cred()[(teaching_cred()$Nombre == input$prof_name), 2] <= 32) {
-    #   shinyjs::enable("save")
-    #   #mensaje
-    # }
   })
   
-  ####
-  # Edit row
-  # observeEvent(input$mod_row_head,{
-  #   showModal(
-  #     if(length(input$tabla_rows_selected) >= 1) {
-  #       modalDialog(
-  #         fluidPage(
-  #           h3(strong("Modificación"),align ="center"),
-  #           hr(),
-  #           dataTableOutput("row_modif"),
-  #           actionButton("save_changes","Save Changes"),
-  #           tags$script(HTML("$(document).on('click', '#save_changes', function () {
-  #                            var list_value=[]
-  #                            for (i = 0; i < $( '.new_input' ).length; i++)
-  #                            {
-  #                            list_value.push($( '.new_input' )[i].value)
-  #                            }
-  #                            Shiny.onInputChange('newValue', list_value) });")) ), size="l" )
-  #     }else{
-  #       modalDialog(
-  #         title = "Advertencia",
-  #         footer = modalButton("OK"),
-  #         paste("Por favor seleccione la fila que quiere editar"),
-  #         easyClose = TRUE
-  #       )
-  #     }
-  #     
-  #   )
-  # })
-  # 
-  # # modify part
-  # output$row_modif <- renderDataTable({
-  #   selected_row = input$tabla_rows_selected
-  #   old_row = this_table()[selected_row, ]
-  #   row_change = list()
-  #   for (i in colnames(old_row))
-  #   {
-  #     if (is.numeric(this_table()[[i]]))
-  #     {
-  #       row_change[[i]] <- paste0('<input class = "new_input" value = ', '"',
-  #                                 old_row[[i]],'"',
-  #                                 ' type = "number" id = new_', i, ' ><br>')
-  #     } 
-  #     else if( is.Date(this_table()[[i]])){
-  #       row_change[[i]] <- paste0('<input class = "new_input" value = ', '"',
-  #                                 old_row[[i]],'"',
-  #                                 ' type = "date" id = new_  ', i, '  ><br>') 
-  #     }
-  #     else 
-  #       row_change[[i]] <- paste0('<input class = "new_input" value = ', '"',
-  #                                 old_row[[i]],'"',
-  #                                 ' type = "textarea" id = new_', i, '><br>')
-  #   }
-  #   row_change = as.data.table(row_change)
-  #   setnames(row_change,colnames(old_row))
-  #   DT = row_change
-  #   DT 
-  # }, escape = F,options = list(dom = 't', ordering = F, scrollX = TRUE),
-  # selection = "none")
-  # 
-  # # This is to replace the modified row to existing row
-  # observeEvent(input$newValue,
-  #              {
-  #                newValue = lapply(input$newValue, function(col) {
-  #                  if (suppressWarnings(all(!is.na(as.numeric(as.character(col)))))) {
-  #                    as.numeric(as.character(col))
-  #                  } else {
-  #                    col
-  #                  }
-  #                })
-  #                df7 <- data.frame(lapply(newValue, function(x) t(data.frame(x))))
-  #                colnames(df7) <- colnames(this_table())
-  #                #selected_row = input$tabla_rows_selected
-  #                #old_row = this_table()[selected_row, ]
-  #                #replace(this_table(), this_table()[input$tabla_rows_selected], df7)
-  #                this_table()[input$tabla_rows_selected] <- df7
-  #                # removeModal()
-  #              }
-  # )
-  
-  ####
   # Reports
   by_mode <- reactive({
     p1 <- this_table() %>% group_by(Modalidad) %>%
