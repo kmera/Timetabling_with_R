@@ -19,7 +19,7 @@ library(rdrop2)
 user_base <- tibble(
   user = c("admin"),
   password = c("Clave2020"), 
-  password_hash = sapply(c("Clave2020"), sodium::password_store), 
+  password_hash = sapply(c("********"), sodium::password_store), 
   permissions = c("admin"),
   name = c("User One")
 )
